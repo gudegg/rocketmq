@@ -914,10 +914,13 @@ public class CommitLog {
             if (messageExt.isWaitStoreMsgOK()) {
                 GroupCommitRequest request = new GroupCommitRequest(result.getWroteOffset() + result.getWroteBytes(),
                         this.defaultMessageStore.getMessageStoreConfig().getSyncFlushTimeout());
+                //异步变同步，每10ms进行一次刷盘，主线程会同步等待刷盘结果
                 service.putRequest(request);
                 return request.future();
             } else {
+                //service->FlushRealTimeService 异步刷盘 每500ms进行一次刷盘
                 service.wakeup();
+                //直接返回成功结果
                 return CompletableFuture.completedFuture(PutMessageStatus.PUT_OK);
             }
         }

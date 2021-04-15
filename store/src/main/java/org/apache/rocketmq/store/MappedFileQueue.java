@@ -196,6 +196,7 @@ public class MappedFileQueue {
         MappedFile mappedFileLast = getLastMappedFile();
 
         if (mappedFileLast == null) {
+            //mappedFileSize 默认1g
             createOffset = startOffset - (startOffset % this.mappedFileSize);
         }
 
